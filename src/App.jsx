@@ -1,62 +1,116 @@
-import { useRef, useState } from "react";
+import {createContext,useContext, useState, useRef } from "react";
+import Toolbar from "./Toolbar";
 
-function Item ({name, price}) {
-  return (
-    <li>
-      {name}, ${price}
-    </li>
-  );
-}
+const MyContext = createContext();
+const ThemeContext = createContext();
 
-function AddForm(props) {
-  const nameRef = useRef();
-  const priceRef = useRef();
-
-  return (
-    <form onSubmit={e => {
-      e.preventDefault();
-      props.add(
-        nameRef.current.value,
-        priceRef.current.value
-      );
-    }}> 
-      <input type="text" ref={nameRef} /><br />
-      <input type="text" ref={priceRef} /><br />
-      <button type="submit">Add</button>
-    </form>
-  );
-}
-
-export default function App() {
-  const [data, setData] = useState([
-    {id:1, name: "Apple", price: 0.99},
-    {id:2, name: 'Kiwi', price: 0.9}
-  ]);
-
-  const add = (name, price) => {
-    const id = data.length + 1; 
-
-    setData([
-      ...data,
-      {id, name, price}
-    ]);
+function HandleList(props) {
+  const list = useRef();
+  const handleClick = () => {
+    props.nlist(list.current.value);
+    list.current.value = "";
   }
   return (
     <div>
-       <h1>Hello REact</h1>
-       <ul>
-         {data.map(i => (
-          <Item key={i.id}
-                name={i.name}
-                price={i.price} />
-         ))}
-       </ul>
-       <AddForm add = {add} />
+      <input type="text" ref={list}></input>
+      <button onClick={handleClick}>Add</button>
     </div>
   )
 }
 
-/*import { useState } from "react";
+function Item(props) {
+  return (
+    <li>
+      {props.num}
+    </li>
+  )
+}
+
+export default function App() {
+  const [number, setNumber] = useState([1,2,3,4,5]);
+  const [theme, setTheme] = useState('light');
+
+  const newList = n => setNumber([...number,n])
+  
+  return (
+    <div>
+      <ThemeContext.Provider value={{theme,setTheme}}>
+         <MyContext.Provider value="Hello Context">
+        <div style={{
+          minHeight:400,
+          color:"green",
+          padding:20,
+          background:
+            theme === "light" ? "lightblue" : "darkblue",
+        }}>
+          <Header />
+        </div>
+         
+      </MyContext.Provider>
+      </ThemeContext.Provider>
+      <Toolbar>
+        <h1>Hello REact</h1>
+        <h2>Component Composition</h2>
+      </Toolbar>
+
+     
+     
+      
+      <HandleList nlist = {newList} />
+
+      <ul>
+        {
+          number.map((i, index)=>
+             <Item key={index} num={i} />
+          )
+        }
+        
+
+      </ul>
+    </div>
+  )
+}
+
+function Header () {
+  return <Title />;
+}
+
+function Title() {
+  const value = useContext(MyContext);
+  const {theme, setTheme } = useContext(ThemeContext);
+  return (
+    <div>
+      <h1> {value }</h1>
+      <button onClick={()=> {
+        setTheme(
+          theme === "light" ? "dark" : "light"
+        )
+      }}>Toggle Theme</button>
+    </div>
+  )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*import {
+ useState } from "react";
 import "./App.css";
 
 export default function App() {
