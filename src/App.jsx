@@ -1,5 +1,7 @@
 import {createContext,useContext, useState, useRef } from "react";
 import Toolbar from "./Toolbar";
+import Withoutcreatecontext from "./Withoutcreatecontext";
+import Withcreatecontext from "./Withcreatecontext";
 
 const MyContext = createContext();
 const ThemeContext = createContext();
@@ -86,6 +88,11 @@ function Title() {
           theme === "light" ? "dark" : "light"
         )
       }}>Toggle Theme</button>
+
+      <Withoutcreatecontext />
+      <Withcreatecontext />
+ 
+
     </div>
   )
 }
